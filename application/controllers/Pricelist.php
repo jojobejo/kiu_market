@@ -175,7 +175,6 @@ class Pricelist extends CI_Controller
 
     public function addPromoImg1()
     {
-
         $id_barang = $this->input->post("id_bar");
         $kd_barang = $this->input->post("kode_barang_isi");
         $nama_bar = $this->input->post("nama_barang_isi");
@@ -303,8 +302,6 @@ class Pricelist extends CI_Controller
 
         redirect('pricelist?id=' . $kd_barang);
     }
-
-
 
     public function addPromoImg3()
     {

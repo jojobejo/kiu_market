@@ -18,7 +18,7 @@ class Keuangan extends CI_Controller
             redirect('login');
         }
 
-        
+
 
         $this->load->view("partial/katalog/header");
         $this->load->view("content/katalog/dashboardkeu");
@@ -110,7 +110,7 @@ class Keuangan extends CI_Controller
         );
 
         $this->M_Katalog->adddata($data);
-        redirect('keuangan');
+        redirect('dashboard');
     }
 
     public function editKat()
