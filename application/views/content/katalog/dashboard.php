@@ -1,4 +1,22 @@
 <style>
+    table {
+        width: 100% !important;
+    }
+
+    table td,
+    table th {
+        white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+
+        table td,
+        table th {
+            white-space: normal;
+            word-break: break-word;
+        }
+    }
+
     .tcenter {
         text-align: center;
     }
@@ -31,27 +49,29 @@
     <div class="content mr-1 ml-1" style="margin-top: -15px;">
         <div class="row">
             <div class="col-lg">
-                <div class="card">
-                    <div class="card-body" style="background-color: white;">
-                        <div>
-                            <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#tambahbarang"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
+                <div class="table-responsive">
+                    <div class="card">
+                        <div class="card-body" style="background-color: white;">
+                            <div>
+                                <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#tambahbarang"><i class="fas fa-plus"></i>&nbsp;Tambah Data</button>
+                            </div>
+                            <table id="example1" class="table table-bordered table-striped display mt-2" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th hidden>Kode Barang</th>
+                                        <th class="tcenter" style="background-color: #6096B4; color: white;" width="50">Produk Fokus</th>
+                                        <th class="tcenter" style="background-color: #6096B4; color: white;">Nama Barang</th>
+                                        <th class="tcenter" style="background-color: #6096B4; color: white;">Nama Suplier</th>
+                                        <th class="tcenter" style="background-color: #6096B4; color: white;">Kelompok Bahan</th>
+                                        <th class="tcenter" style="background-color: #6096B4; color: white;">Bahan Aktif</th>
+                                        <th class="tcenter" style="background-color: #6096B4; color: white;">Gambar Produk</th>
+                                        <th class="tcenter" style="background-color: #6096B4; color: white;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="dt-body-center">
+                                </tbody>
+                            </table>
                         </div>
-                        <table id="example1" class="table table-bordered table-striped display mt-2" style="width:100%;">
-                            <thead>
-                                <tr>
-                                    <th hidden>Kode Barang</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;" width="50">Produk Fokus</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Nama Barang</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Nama Suplier</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Kelompok Bahan</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Bahan Aktif</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Gambar Produk</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="dt-body-center">
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>

@@ -1,66 +1,138 @@
 <style>
-    .tcenter {
-        text-align: center;
+    /* Wrapper biar tabel tidak meledak */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 6px;
     }
 
-    .dt-body-center {
-        text-align: center;
+    /* Tabel lebih stabil */
+    .table-responsive table {
+        table-layout: auto;
+        width: 100%;
     }
 
-    .table-striped>tbody>tr:nth-child(2n+1)>td,
-    .table-striped>tbody>tr:nth-child(2n+1)>th {
+    /* Header bersih di mobile */
+    thead th {
+        background-color: #6096B4;
+        color: white;
+        padding: 8px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    /* Row style */
+    .table-striped>tbody>tr:nth-child(2n+1)>td {
         background-color: #FFFBF5;
+    }
+
+    /* Isi tabel */
+    td,
+    th {
+        text-align: center;
+        vertical-align: middle;
+        font-size: 13px;
+        padding: 8px 6px;
+    }
+
+    /* Gambar produk fix */
+    td img {
+        max-width: 60px;
+        height: auto;
+        border-radius: 4px;
+    }
+
+    /* Tombol aksi friendly mobile */
+    .table .btn {
+        padding: 6px 8px;
+        font-size: 12px;
+        border-radius: 6px;
+    }
+
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Mobile optimization */
+    @media (max-width: 768px) {
+
+        thead th {
+            font-size: 11px;
+            padding: 6px;
+            white-space: normal;
+            line-height: 1.2;
+        }
+
+        td,
+        th {
+            padding: 7px 4px;
+            font-size: 12px;
+        }
+
+        td img {
+            max-width: 45px;
+        }
+
+        .table .btn {
+            padding: 4px 6px;
+            font-size: 11px;
+        }
+
+        /* Biar tabel tidak terlalu panjang */
+        th:nth-child(2),
+        th:nth-child(3),
+        th:nth-child(4),
+        th:nth-child(5),
+        th:nth-child(6) {
+            white-space: normal;
+        }
     }
 </style>
 <?php $this->load->view('partial/katalog/navbar') ?>
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper" style="background-color:  #F5F5F5;">
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container">
-            <div class="row">
+<div class="content-wrapper" style="background-color:#F5F5F5;">
 
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+    <div class="content-header">
+        <div class="container"></div>
     </div>
 
-    <!-- Main content -->
-    <div class="content mr-1 ml-1" style="margin-top: -15px;">
+    <div class="content px-2" style="margin-top:-10px;">
         <div class="row">
             <div class="col-lg">
-                <div class="card">
-                    <div class="card-body" style="background-color: white;">
+                <div class="card shadow-sm" style="border-radius:10px;">
+                    <div class="card-body" style="background-color:white; border-radius:10px;">
 
-                        <table id="table" class="table table-bordered table-striped display mt-2" style="width:100%;">
-                            <?php foreach ($tot_gbr as $t) : ?>
-                                <h3 hidden>Produk Katalog dengan gambar : <?= $t->t_upl_gbr?> Barang </h3>
-                            <?php endforeach; ?>
-                            <thead>
-                                <tr>
-                                    <th hidden>Kode Barang</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;" width="50">Produk Fokus</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Nama Barang</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Nama Suplier</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Kelompok Bahan</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Bahan Aktif</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Gambar Produk</th>
-                                    <th class="tcenter" style="background-color: #6096B4; color: white;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="dt-body-center">
+                        <div class="table-responsive">
+                            <table id="table" class="table table-bordered table-striped mt-2">
+                                <thead>
+                                    <tr>
+                                        <th hidden>Kode Barang</th>
+                                        <th>Produk Fokus</th>
+                                        <th>Nama Barang</th>
+                                        <th>Nama Suplier</th>
+                                        <th>Kelompok Bahan</th>
+                                        <th>Bahan Aktif</th>
+                                        <th>Gambar Produk</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="dt-body-center">
+                                </tbody>
+                            </table>
+                        </div>
 
-                            </tbody>
-
-                        </table>
                     </div>
                 </div>
             </div>
-            <!-- /.col-md-6 -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.content -->
 </div>
+
 <!-- /.content-wrapper -->
 
 <!-- Main Footer -->

@@ -46,8 +46,6 @@ class Katalog extends CI_Controller
             <i class="fa fa-solid fa-eye"></i></a>' . ' ' . '
             <a href="#" class="btn btn-warning btn-sm " data-toggle="modal" data-target="#editbarang' . $field->id_barang . '">
             <i class="fa fa-solid fa-pencil-alt"></i></a>' . ' ' . '
-            <a href="#" class="btn btn-success btn-sm " data-toggle="modal" data-target="#upload' . $field->id_barang . '">
-            <i class="fa fa-solid fa-image"></i></a>' . ' ' . '
             <a href="#" class="btn btn-danger btn-sm " data-toggle="modal" data-target="#hapus' . $field->id_barang . '">
             <i class="fa fa-solid fa-trash"></i></a>';
             $data[] = $row;
