@@ -32,7 +32,7 @@
             "order": [],
             "responsive": true,
             "ajax": {
-                "url": "<?= base_url('Sales/getBarang') ?>",
+                "url": "<?= base_url('Viewer/getBarang') ?>",
                 "type": "POST",
                 "data": function(d) {
                     d.filter_fokus  = filterFokus;

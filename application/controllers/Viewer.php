@@ -2,7 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 
-class Sales extends CI_Controller
+class Viewer extends CI_Controller
 {
 
     function __construct()
@@ -21,9 +21,9 @@ class Sales extends CI_Controller
         $data['tot_gbr'] = $this->M_Katalog->get_total()->result();
         $data['statistik'] = $this->M_Katalog->getStatistik();
 
-        $this->load->view("partial/sales/header");
-        $this->load->view("content/sales/katalog/dashboard", $data);
-        $this->load->view("partial/sales/footer");
+        $this->load->view("partial/viewer/header");
+        $this->load->view("content/viewer/dashboard", $data);
+        $this->load->view("partial/viewer/footer");
     }
 
     function getBarang()

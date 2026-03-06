@@ -23,6 +23,41 @@
         height: auto;
         cursor: pointer;
         border-radius: 6px;
+        transition: transform 0.2s;
+    }
+
+    .promo-image:hover {
+        transform: scale(1.05);
+    }
+
+    /* Style untuk tabel pricelist */
+    .table-pricelist {
+        margin: 30px auto;
+        max-width: 900px;
+    }
+
+    .table-pricelist th {
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table-pricelist td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table-pricelist tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    /* Style untuk modal gambar promo */
+    .modal-promo-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
     }
 </style>
 <?php $this->load->view('partial/katalog/navbar') ?>
@@ -59,7 +94,7 @@
                             Gambar Produk
                         </a>
                     </div>
-                    <?php if ($this->session->userdata('hak_akses') == '1') { ?>
+                    <?php if ($this->session->userdata('hak_akses') == '1' || $this->session->userdata('hak_akses') == '2' || $this->session->userdata('hak_akses') == '4') { ?>
                         <div class="col-auto">
                             <a href="#" data-toggle="modal" data-target="#modalUploadGambar" class="text-center btn btn-success" style="margin-top:-5px; font-weight: bold;">
                                 Ganti Gambar Produk
@@ -75,9 +110,9 @@
 
                 <?php
                 $promos = [
-                    ['label' => 'PROMO 1', 'key' => 'gbr_promo1', 'modal' => 'edit1'],
-                    ['label' => 'PROMO 2', 'key' => 'gbr_promo2', 'modal' => 'edit2'],
-                    ['label' => 'PROMO 3', 'key' => 'gbr_promo3', 'modal' => 'edit3']
+                    ['label' => 'PROMO 1', 'key' => 'gbr_promo1', 'modal' => 'edit1', 'view_modal' => 'viewPromo1'],
+                    ['label' => 'PROMO 2', 'key' => 'gbr_promo2', 'modal' => 'edit2', 'view_modal' => 'viewPromo2'],
+                    ['label' => 'PROMO 3', 'key' => 'gbr_promo3', 'modal' => 'edit3', 'view_modal' => 'viewPromo3']
                 ];
 
                 foreach ($promos as $promo) :
@@ -106,8 +141,8 @@
                         <!-- IMAGE OR EMPTY STATE -->
                         <?php if ($hasImage) : ?>
 
-                            <a href="<?= base_url('images/kontrak/' . $img) ?>" target="_blank">
-                                <img src="<?= base_url('images/kontrak/' . $img) ?>" class="promo-image" alt="Promo Image">
+                            <a href="#" data-toggle="modal" data-target="#<?= $promo['view_modal'] ?>">
+                                <img src="<?= base_url('images/kontrak/' . $img) ?>" class="promo-image" alt="<?= $promo['label'] ?>">
                             </a>
 
                         <?php else : ?>
@@ -124,6 +159,71 @@
 
             </div>
             <!-- END GAMBAR PROMO -->
+
+            <!-- TABEL PRICELIST -->
+            <!-- <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <h3 class="text-center mb-4" style="font-weight: bold;">Daftar Harga</h3>
+                        
+                        <?php if ($this->session->userdata('hak_akses') == '1' || $this->session->userdata('hak_akses') == '3') { ?>
+                            <div class="text-center mb-3">
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalTambahPricelist">
+                                    <i class="fa fa-plus"></i> Tambah Pricelist
+                                </button>
+                            </div>
+                        <?php } ?>
+
+                        <div class="table-responsive table-pricelist">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Satuan Barang</th>
+                                        <th>R1</th>
+                                        <th>R2</th>
+                                        <th>Umum</th>
+                                        <?php if ($this->session->userdata('hak_akses') == '1' || $this->session->userdata('hak_akses') == '3') { ?>
+                                            <th>Aksi</th>
+                                        <?php } ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($pricelist_data)) : ?>
+                                        <?php foreach ($pricelist_data as $item) : ?>
+                                            <tr>
+                                                <td><?php echo $item['satuan']; ?></td>
+                                                <td><?php echo $item['r1'] ? 'Rp ' . number_format($item['r1'], 0, ',', '.') : '-'; ?></td>
+                                                <td><?php echo $item['r2'] ? 'Rp ' . number_format($item['r2'], 0, ',', '.') : '-'; ?></td>
+                                                <td><?php echo $item['umum'] ? 'Rp ' . number_format($item['umum'], 0, ',', '.') : '-'; ?></td>
+                                                <?php if ($this->session->userdata('hak_akses') == '1' || $this->session->userdata('hak_akses') == '3') { ?>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modalEditPricelist<?php echo $item['id'] . '_' . $item['slot']; ?>">
+                                                            <i class="fa fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalDeletePricelist<?php echo $item['id'] . '_' . $item['slot']; ?>">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                <?php } ?>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else : ?>
+                                        <tr>
+                                            <td colspan="<?php echo ($this->session->userdata('hak_akses') == '1' || $this->session->userdata('hak_akses') == '3') ? '5' : '4'; ?>" class="text-center">
+                                                <div class="alert alert-info mb-0">
+                                                    Belum ada data pricelist
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+            <!-- END TABEL PRICELIST -->
+
             <div class="card" hidden>
                 <div class="card-body m-2">
                     <?php foreach ($prices as $pl) : ?>
@@ -158,6 +258,240 @@
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- MODAL TAMBAH PRICELIST -->
+            <!-- <div class="modal fade" id="modalTambahPricelist" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Tambah Pricelist</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <form action="<?php echo base_url('pricelist/add'); ?>" method="post">
+                            <div class="modal-body">
+                                <input type="hidden" name="id_barang" value="<?php echo $title['kode_barang']; ?>">
+                                
+                                <div class="form-group">
+                                    <label>Satuan Barang</label>
+                                    <input type="text" class="form-control" name="satuan" placeholder="Contoh: 1 pcs, 1-25 box" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Harga R1</label>
+                                    <input type="number" class="form-control" name="r1" placeholder="Masukkan harga R1">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Harga R2</label>
+                                    <input type="number" class="form-control" name="r2" placeholder="Masukkan harga R2">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Harga Umum</label>
+                                    <input type="number" class="form-control" name="umum" placeholder="Masukkan harga umum">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-success">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- MODAL EDIT PRICELIST -->
+            <!-- <?php if (!empty($pricelist_data)) : ?>
+                <?php foreach ($pricelist_data as $item) : ?>
+                    <div class="modal fade" id="modalEditPricelist<?php echo $item['id'] . '_' . $item['slot']; ?>" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit Pricelist</h5>
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <form action="<?php echo base_url('pricelist/edit'); ?>" method="post">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id_pricelist" value="<?php echo $item['id']; ?>">
+                                        <input type="hidden" name="kode_barang" value="<?php echo $title['kode_barang']; ?>">
+                                        <input type="hidden" name="qty_slot" value="<?php echo $item['slot']; ?>">
+                                        
+                                        <div class="form-group">
+                                            <label>Satuan Barang</label>
+                                            <input type="text" class="form-control" name="satuan" value="<?php echo $item['satuan']; ?>" required>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label>Harga R1</label>
+                                            <input type="number" class="form-control" name="r1" value="<?php echo $item['r1']; ?>">
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label>Harga R2</label>
+                                            <input type="number" class="form-control" name="r2" value="<?php echo $item['r2']; ?>">
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label>Harga Umum</label>
+                                            <input type="number" class="form-control" name="umum" value="<?php echo $item['umum']; ?>">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?> -->
+
+            <!-- MODAL DELETE PRICELIST -->
+            <!-- <?php if (!empty($pricelist_data)) : ?>
+                <?php foreach ($pricelist_data as $item) : ?>
+                    <div class="modal fade" id="modalDeletePricelist<?php echo $item['id'] . '_' . $item['slot']; ?>" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-danger text-white">
+                                    <h5 class="modal-title">Hapus Pricelist</h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <form action="<?php echo base_url('pricelist/delete_item'); ?>" method="post">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id_pricelist" value="<?php echo $item['id']; ?>">
+                                        <input type="hidden" name="qty_slot" value="<?php echo $item['slot']; ?>">
+                                        <input type="hidden" name="kode_barang" value="<?php echo $title['kode_barang']; ?>">
+                                        
+                                        <p class="mb-0">Apakah Anda yakin ingin menghapus pricelist untuk:</p>
+                                        <div class="alert alert-warning mt-3">
+                                            <strong>Satuan:</strong> <?php echo $item['satuan']; ?><br>
+                                            <strong>R1:</strong> Rp <?php echo number_format($item['r1'], 0, ',', '.'); ?><br>
+                                            <strong>R2:</strong> Rp <?php echo number_format($item['r2'], 0, ',', '.'); ?><br>
+                                            <strong>Umum:</strong> Rp <?php echo number_format($item['umum'], 0, ',', '.'); ?>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?> -->
+
+            <!-- MODAL VIEW PROMO 1 -->
+            <div class="modal fade" id="viewPromo1" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">PROMO 1 - <?php echo $title['nama_barang']; ?></h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <?php 
+                            $img1 = $title['gbr_promo1'];
+                            $path1 = FCPATH . 'images/kontrak/' . $img1;
+                            if ($img1 && $img1 !== '-' && file_exists($path1)) : 
+                            ?>
+                                <img src="<?php echo base_url('images/kontrak/' . $img1); ?>" alt="Promo 1" class="modal-promo-image">
+                            <?php else : ?>
+                                <div class="alert alert-warning">
+                                    <strong>Belum ada gambar promo 1</strong>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            <?php if ($img1 && $img1 !== '-' && file_exists($path1)) : ?>
+                                <a href="<?php echo base_url('images/kontrak/' . $img1); ?>" target="_blank" class="btn btn-primary">
+                                    <i class="fa fa-download"></i> Buka di Tab Baru
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL VIEW PROMO 2 -->
+            <div class="modal fade" id="viewPromo2" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">PROMO 2 - <?php echo $title['nama_barang']; ?></h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <?php 
+                            $img2 = $title['gbr_promo2'];
+                            $path2 = FCPATH . 'images/kontrak/' . $img2;
+                            if ($img2 && $img2 !== '-' && file_exists($path2)) : 
+                            ?>
+                                <img src="<?php echo base_url('images/kontrak/' . $img2); ?>" alt="Promo 2" class="modal-promo-image">
+                            <?php else : ?>
+                                <div class="alert alert-warning">
+                                    <strong>Belum ada gambar promo 2</strong>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            <?php if ($img2 && $img2 !== '-' && file_exists($path2)) : ?>
+                                <a href="<?php echo base_url('images/kontrak/' . $img2); ?>" target="_blank" class="btn btn-primary">
+                                    <i class="fa fa-download"></i> Buka di Tab Baru
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL VIEW PROMO 3 -->
+            <div class="modal fade" id="viewPromo3" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">PROMO 3 - <?php echo $title['nama_barang']; ?></h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <?php 
+                            $img3 = $title['gbr_promo3'];
+                            $path3 = FCPATH . 'images/kontrak/' . $img3;
+                            if ($img3 && $img3 !== '-' && file_exists($path3)) : 
+                            ?>
+                                <img src="<?php echo base_url('images/kontrak/' . $img3); ?>" alt="Promo 3" class="modal-promo-image">
+                            <?php else : ?>
+                                <div class="alert alert-warning">
+                                    <strong>Belum ada gambar promo 3</strong>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            <?php if ($img3 && $img3 !== '-' && file_exists($path3)) : ?>
+                                <a href="<?php echo base_url('images/kontrak/' . $img3); ?>" target="_blank" class="btn btn-primary">
+                                    <i class="fa fa-download"></i> Buka di Tab Baru
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
             </div>
 

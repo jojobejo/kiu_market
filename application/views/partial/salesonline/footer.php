@@ -20,8 +20,7 @@
 <script src="<?php echo base_url('assets/dist/js/adminlte.min.js') ?>"></script>
 
 <script>
-    var table;
-    $(document).ready(function() {
+$(document).ready(function() {
 
     var filterFokus  = '';
     var filterOnline = '';
@@ -32,26 +31,13 @@
         "order": [],
         "responsive": true,
         "ajax": {
-            "url": "<?= base_url('katalog/getBarang') ?>", // sesuaikan per halaman
+            "url": "<?= base_url('salesonline/getBarang') ?>",
             "type": "POST",
             "data": function(d) {
                 d.filter_fokus  = filterFokus;
                 d.filter_online = filterOnline; // ← kirim filter online
             }
         },
-        "columnDefs": [
-            { "visible": false,   "targets": [0] },
-            { "orderable": false, "targets": [6, 7, 8] },
-            { "className": "dt-body-center", "targets": "_all" },
-            { "responsivePriority": 1, "targets": 2 },
-            { "responsivePriority": 2, "targets": 8 },
-            { "responsivePriority": 3, "targets": 7 },
-            { "responsivePriority": 4, "targets": 3 },
-            { "responsivePriority": 5, "targets": 6 },
-            { "responsivePriority": 6, "targets": 1 },
-            { "responsivePriority": 7, "targets": 4 },
-            { "responsivePriority": 8, "targets": 5 }
-        ],
         "drawCallback": function() {
 
             $('.btn-edit').off('click').on('click', function() {
@@ -66,7 +52,7 @@
 
             $('.btn-hapus').off('click').on('click', function() {
                 $('#hapus_nama_barang').text($(this).data('nama'));
-                $('#hapus_link').attr('href', '<?= base_url('katalog/deleteDat/') ?>' + $(this).data('id'));
+                $('#hapus_link').attr('href', '<?= base_url('salesonline/deleteDat/') ?>' + $(this).data('id'));
                 $('#modalHapus').modal('show');
             });
 
