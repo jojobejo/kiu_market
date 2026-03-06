@@ -198,6 +198,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-6 col-md-3 mb-2">
             <div class="info-box shadow-sm mb-0" style="border-left: 4px solid #6096B4;">
                 <span class="info-box-icon" style="background-color:#6096B4;">
@@ -209,6 +210,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     <!-- FILTER PRODUK FOKUS + ONLINE SHOP -->
