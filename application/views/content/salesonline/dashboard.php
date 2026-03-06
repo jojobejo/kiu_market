@@ -279,6 +279,7 @@
                             <table id="tableSalesOnline" class="table table-bordered table-striped display mt-2" style="width:100%;">
                                 <thead>
                                     <tr>
+                                        <th class="tcenter" style="background-color:#6096B4; color:white;">kode</th>
                                         <th class="tcenter" style="background-color:#6096B4; color:white;">Produk Fokus</th>
                                         <th class="tcenter" style="background-color:#6096B4; color:white;">Nama Barang</th>
                                         <th class="tcenter" style="background-color:#6096B4; color:white;">Nama Suplier</th>

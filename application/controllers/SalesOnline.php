@@ -29,6 +29,7 @@ class SalesOnline extends CI_Controller
 
         foreach ($list as $field) {
             $row = array();
+            $row[] = $field->kode_barang;
             $row[] = $field->produk_fokus;
             $row[] = $field->nama_barang;
             $row[] = $field->nama_suplier;
