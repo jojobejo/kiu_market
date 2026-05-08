@@ -149,7 +149,16 @@ class Sales extends CI_Controller
             return $this->jsonResponse(false, 'Silakan pilih gambar produk terlebih dahulu.');
         }
 
-        $config['upload_path'] = './images/produk/';
+        $upload_path = FCPATH . 'images/produk/';
+        if (!is_dir($upload_path) && !@mkdir($upload_path, 0775, true)) {
+            return $this->jsonResponse(false, 'Folder upload gambar produk tidak tersedia di server.');
+        }
+
+        if (!is_writable($upload_path)) {
+            return $this->jsonResponse(false, 'Folder upload gambar produk tidak memiliki izin tulis di server.');
+        }
+
+        $config['upload_path'] = $upload_path;
         $config['allowed_types'] = 'jpg|jpeg|png|gif|webp';
         $config['max_size'] = 10000;
         $config['max_width'] = 6000;
