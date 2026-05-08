@@ -22,11 +22,15 @@
 <script>
     var table;
     $(document).ready(function() {
+        bsCustomFileInput.init();
 
         var filterFokus  = '';
         var filterOnline = '';
+        var defaultPreviewImage = '<?= base_url('images/Karisma.png') ?>';
+        var saveBahanUrl = '<?= base_url('Sales/updateBahanAktif') ?>';
+        var saveGambarUrl = '<?= base_url('Sales/updateGambarProduk') ?>';
 
-        var table = $('#table').DataTable({ 
+        table = $('#table').DataTable({ 
             "processing": true,
             "serverSide": true,
             "order": [],
@@ -45,6 +49,31 @@
                 { "className": "text-center", "targets": "_all" }
             ],
             "drawCallback": function() {
+                $('.btn-edit-bahan').off('click').on('click', function() {
+                    resetFeedback('#feedbackBahanAktif');
+                    $('#edit_bahan_id_barang').val($(this).data('id'));
+                    $('#edit_bahan_kode_barang').text($(this).data('kode'));
+                    $('#edit_bahan_nama_barang').text($(this).data('nama'));
+                    $('#edit_kelompok').val($(this).data('kelompok'));
+                    $('#edit_bahan_aktif').val($(this).data('bahan'));
+                    $('#modalEditBahanAktif').modal('show');
+                });
+
+                $('.btn-edit-gambar').off('click').on('click', function() {
+                    var imageName = $(this).data('image');
+                    var previewSrc = imageName && imageName !== '-'
+                        ? '<?= base_url('images/produk/') ?>' + imageName
+                        : defaultPreviewImage;
+
+                    resetFeedback('#feedbackGambarProduk');
+                    $('#formEditGambarProduk')[0].reset();
+                    $('.custom-file-label[for="gambar_produk"]').text('Pilih file gambar');
+                    $('#edit_gambar_id_barang').val($(this).data('id'));
+                    $('#edit_gambar_kode_barang').text($(this).data('kode'));
+                    $('#edit_gambar_nama_barang').text($(this).data('nama'));
+                    $('#previewGambarProduk').attr('src', previewSrc);
+                    $('#modalEditGambarProduk').modal('show');
+                });
 
                 $('.btn-online').off('click').on('click', function() {
                     $('#online_id_barang').val($(this).data('id'));
@@ -96,6 +125,112 @@
             filterOnline = online;
             table.ajax.reload();
         });
+
+        $('#gambar_produk').on('change', function() {
+            var file = this.files && this.files[0] ? this.files[0] : null;
+            if (!file) {
+                $('#previewGambarProduk').attr('src', defaultPreviewImage);
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#previewGambarProduk').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        $('#formEditBahanAktif').on('submit', function(e) {
+            e.preventDefault();
+            resetFeedback('#feedbackBahanAktif');
+
+            var $button = $('#btnSimpanBahanAktif');
+            var originalHtml = $button.html();
+            $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-1"></i>Menyimpan...');
+
+            $.ajax({
+                url: saveBahanUrl,
+                type: 'POST',
+                dataType: 'json',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.status) {
+                        showFeedback('#feedbackBahanAktif', response.message, true);
+                        table.ajax.reload(null, false);
+                        setTimeout(function() {
+                            $('#modalEditBahanAktif').modal('hide');
+                        }, 700);
+                    } else {
+                        showFeedback('#feedbackBahanAktif', response.message || 'Perubahan gagal disimpan.', false);
+                    }
+                },
+                error: function() {
+                    showFeedback('#feedbackBahanAktif', 'Terjadi kendala saat mengirim perubahan bahan aktif.', false);
+                },
+                complete: function() {
+                    $button.prop('disabled', false).html(originalHtml);
+                }
+            });
+        });
+
+        $('#formEditGambarProduk').on('submit', function(e) {
+            e.preventDefault();
+            resetFeedback('#feedbackGambarProduk');
+
+            var formData = new FormData(this);
+            var $button = $('#btnSimpanGambarProduk');
+            var originalHtml = $button.html();
+            $button.prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-1"></i>Mengunggah...');
+
+            $.ajax({
+                url: saveGambarUrl,
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.status) {
+                        showFeedback('#feedbackGambarProduk', response.message, true);
+                        if (response.image_url) {
+                            $('#previewGambarProduk').attr('src', response.image_url);
+                        }
+                        table.ajax.reload(null, false);
+                        setTimeout(function() {
+                            $('#modalEditGambarProduk').modal('hide');
+                        }, 700);
+                    } else {
+                        showFeedback('#feedbackGambarProduk', response.message || 'Gambar gagal diperbarui.', false);
+                    }
+                },
+                error: function() {
+                    showFeedback('#feedbackGambarProduk', 'Upload gambar gagal diproses. Silakan coba lagi.', false);
+                },
+                complete: function() {
+                    $button.prop('disabled', false).html(originalHtml);
+                }
+            });
+        });
+
+        $('#modalEditBahanAktif, #modalEditGambarProduk').on('hidden.bs.modal', function() {
+            resetFeedback('#feedbackBahanAktif');
+            resetFeedback('#feedbackGambarProduk');
+        });
+
+        function showFeedback(selector, message, isSuccess) {
+            $(selector)
+                .removeClass('is-success is-error')
+                .addClass(isSuccess ? 'is-success' : 'is-error')
+                .show()
+                .text(message);
+        }
+
+        function resetFeedback(selector) {
+            $(selector)
+                .removeClass('is-success is-error')
+                .hide()
+                .text('');
+        }
 
     });
 

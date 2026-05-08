@@ -141,4 +141,21 @@ class M_Katalog extends CI_Model
         $this->db->where('id_barang', $id_barang);
         return $this->db->update('tb_barangv2', $data);
     }
+
+    public function getById($id_barang)
+    {
+        return $this->db->get_where('tb_barangv2', array('id_barang' => $id_barang))->row();
+    }
+
+    public function updateBahanAktif($id_barang, $data)
+    {
+        $this->db->where('id_barang', $id_barang);
+        return $this->db->update('tb_barangv2', $data);
+    }
+
+    public function updateGambarProduk($id_barang, $file_name)
+    {
+        $this->db->where('id_barang', $id_barang);
+        return $this->db->update('tb_barangv2', array('gbr_produk' => $file_name));
+    }
 }
