@@ -158,4 +158,80 @@ class M_Katalog extends CI_Model
         $this->db->where('id_barang', $id_barang);
         return $this->db->update('tb_barangv2', array('gbr_produk' => $file_name));
     }
+
+    private function build_catalog_ajax_query($filters = array())
+    {
+        $search = isset($filters['search']) ? trim((string) $filters['search']) : '';
+        $filter_fokus = isset($filters['filter_fokus']) ? trim((string) $filters['filter_fokus']) : '';
+        $filter_online = isset($filters['filter_online']) ? trim((string) $filters['filter_online']) : '';
+        $sort = isset($filters['sort']) ? trim((string) $filters['sort']) : 'fokus';
+
+        $this->db->from('tb_barangv2');
+
+        if ($search !== '') {
+            $this->db->group_start();
+            $this->db->like('kode_barang', $search);
+            $this->db->or_like('nama_barang', $search);
+            $this->db->or_like('nama_suplier', $search);
+            $this->db->or_like('kelompok', $search);
+            $this->db->or_like('bahan_aktif', $search);
+            $this->db->group_end();
+        }
+
+        if ($filter_fokus !== '') {
+            if ($filter_fokus === 'kosong') {
+                $this->db->where('(produk_fokus IS NULL OR produk_fokus = "")', null, false);
+            } else {
+                $this->db->where('produk_fokus', $filter_fokus);
+            }
+        }
+
+        if ($filter_online !== '') {
+            if ($filter_online === 'shopee') {
+                $this->db->where('shopee', 1);
+            } elseif ($filter_online === 'tokopedia') {
+                $this->db->where('tokopedia', 1);
+            } elseif ($filter_online === 'kiushop') {
+                $this->db->where('kiushop', 1);
+            } elseif ($filter_online === 'kosong') {
+                $this->db->where('shopee', 0);
+                $this->db->where('tokopedia', 0);
+                $this->db->where('kiushop', 0);
+            }
+        }
+
+        switch ($sort) {
+            case 'nama_asc':
+                $this->db->order_by('nama_barang', 'ASC');
+                break;
+            case 'nama_desc':
+                $this->db->order_by('nama_barang', 'DESC');
+                break;
+            case 'supplier':
+                $this->db->order_by('nama_suplier', 'ASC');
+                $this->db->order_by('nama_barang', 'ASC');
+                break;
+            case 'terbaru':
+                $this->db->order_by('id_barang', 'DESC');
+                break;
+            case 'fokus':
+            default:
+                $this->db->order_by('produk_fokus', 'DESC');
+                $this->db->order_by('id_barang', 'DESC');
+                break;
+        }
+    }
+
+    public function get_catalog_ajax($filters = array(), $limit = 12, $offset = 0)
+    {
+        $this->build_catalog_ajax_query($filters);
+        $this->db->limit((int) $limit, (int) $offset);
+        return $this->db->get()->result();
+    }
+
+    public function count_catalog_ajax($filters = array())
+    {
+        $this->build_catalog_ajax_query($filters);
+        return $this->db->count_all_results();
+    }
 }

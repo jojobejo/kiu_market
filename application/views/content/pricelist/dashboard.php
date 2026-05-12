@@ -1,4 +1,68 @@
 <style>
+    .content-wrapper {
+        background: linear-gradient(180deg, #f7f8fb 0%, #eef2f7 100%);
+    }
+
+    .pricelist-page {
+        padding: 1rem 1rem 2rem;
+    }
+
+    .pricelist-hero {
+        max-width: 1100px;
+        margin: 0 auto 1.25rem;
+        padding: 1.4rem 1.2rem;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #ffffff 0%, #f4f8fc 100%);
+        box-shadow: 0 18px 40px rgba(36, 71, 107, 0.08);
+    }
+
+    .pricelist-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+        line-height: 1.2;
+        word-break: break-word;
+    }
+
+    .pricelist-subtitle {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+        line-height: 1.3;
+        word-break: break-word;
+    }
+
+    .pricelist-supplier {
+        font-size: 1rem;
+        margin-bottom: 0;
+        color: #617285;
+        line-height: 1.5;
+        word-break: break-word;
+    }
+
+    .hero-actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 1.25rem;
+    }
+
+    .hero-actions .btn {
+        min-width: 210px;
+        border-radius: 999px;
+        font-weight: 600;
+        padding: 10px 18px;
+        box-shadow: 0 12px 28px rgba(36, 71, 107, 0.14);
+    }
+
+    .section-divider {
+        max-width: 1100px;
+        margin: 0 auto 1.75rem;
+        border: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
     .img-promo {
         width: 400px;
         height: 600px;
@@ -18,16 +82,57 @@
         text-align: center;
     }
 
+    .promo-card {
+        height: 100%;
+        padding: 1rem;
+        border-radius: 20px;
+        background: #fff;
+        box-shadow: 0 18px 36px rgba(36, 71, 107, 0.08);
+    }
+
+    .promo-card-header {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 0.85rem;
+        flex-wrap: wrap;
+    }
+
+    .promo-card-title {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
     .promo-image {
         max-width: 100%;
+        width: 100%;
         height: auto;
+        max-height: 430px;
+        object-fit: contain;
         cursor: pointer;
-        border-radius: 6px;
-        transition: transform 0.2s;
+        border-radius: 16px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 18px 32px rgba(20, 40, 65, 0.12);
     }
 
     .promo-image:hover {
         transform: scale(1.05);
+        box-shadow: 0 24px 40px rgba(20, 40, 65, 0.18);
+    }
+
+    .promo-empty {
+        min-height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        margin-bottom: 0;
+        border: 1px dashed #cad7e4;
+        background: linear-gradient(135deg, #f6f9fc 0%, #eef4f8 100%);
     }
 
     /* Style untuk tabel pricelist */
@@ -59,6 +164,92 @@
         height: auto;
         border-radius: 8px;
     }
+
+    @media (max-width: 991.98px) {
+        .pricelist-page {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        .promo-grid > [class*="col-"] {
+            margin-bottom: 1rem;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .pricelist-page {
+            padding: 0.75rem 0.5rem 1.5rem;
+        }
+
+        .pricelist-hero {
+            padding: 1.1rem 0.9rem;
+            border-radius: 18px;
+            margin-bottom: 1rem;
+        }
+
+        .pricelist-title {
+            font-size: 1.45rem;
+        }
+
+        .pricelist-subtitle {
+            font-size: 1.05rem;
+        }
+
+        .pricelist-supplier {
+            font-size: 0.92rem;
+        }
+
+        .hero-actions {
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .hero-actions .btn {
+            width: 100%;
+            min-width: 0;
+            padding: 11px 14px;
+        }
+
+        .section-divider {
+            margin-bottom: 1rem;
+        }
+
+        .promo-card {
+            padding: 0.85rem;
+            border-radius: 18px;
+        }
+
+        .promo-card-header {
+            min-height: 0;
+            margin-bottom: 0.75rem;
+        }
+
+        .promo-card-title {
+            font-size: 1rem;
+        }
+
+        .promo-image {
+            max-height: 360px;
+        }
+
+        .promo-empty {
+            min-height: 160px;
+            font-size: 0.95rem;
+            padding: 1rem;
+        }
+
+        .modal .modal-dialog {
+            margin: 0.75rem;
+        }
+
+        .modal .modal-footer {
+            gap: 8px;
+        }
+
+        .modal .modal-footer .btn {
+            width: 100%;
+        }
+    }
 </style>
 <?php $this->load->view('partial/katalog/navbar') ?>
 <?php $this->load->view('content/pricelist/modalAddImage') ?>
@@ -79,34 +270,35 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content">
+            <div class="pricelist-page">
 
 
             <?php $kodeID = $this->input->get('id'); ?>
             <?php $kodeKD = $this->input->get('kd'); ?>
 
-            <h1 class="text-center">Pricelist - <?php echo $title['kode_barang'] ?></h1>
-            <h4 class="text-center" style="margin-top:-5px; font-weight: bold;"><?php echo $title['nama_barang']; ?></h4>
-            <h5 class="text-center" style="margin-top:1px; margin-bottom:30px; font-weight: -100;"><?php echo $title['nama_suplier']; ?></h5>
-            <center>
-                <div class="row justify-content-center mb-3">
-                    <div class="col-auto">
+            <div class="pricelist-hero text-center">
+                <h1 class="pricelist-title">Pricelist - <?php echo $title['kode_barang'] ?></h1>
+                <h4 class="pricelist-subtitle"><?php echo $title['nama_barang']; ?></h4>
+                <h5 class="pricelist-supplier"><?php echo $title['nama_suplier']; ?></h5>
+                <div class="hero-actions">
+                    <div>
                         <a href="#" data-toggle="modal" data-target="#modalGambarProduk" class="text-center btn btn-primary" style="margin-top:-5px; font-weight: bold;">
                             Gambar Produk
                         </a>
                     </div>
                     <?php if ($this->session->userdata('hak_akses') == '1' || $this->session->userdata('hak_akses') == '2' || $this->session->userdata('hak_akses') == '4') { ?>
-                        <div class="col-auto">
+                        <div>
                             <a href="#" data-toggle="modal" data-target="#modalUploadGambar" class="text-center btn btn-success" style="margin-top:-5px; font-weight: bold;">
                                 Ganti Gambar Produk
                             </a>
                         </div>
                     <?php } ?>
                 </div>
-            </center>
-            <hr style="margin-left:50px; margin-right:50px; margin-bottom: 30px; border: 0; border-top: 1px solid rgba(0, 0, 0, 0.2);" />
+            </div>
+            <hr class="section-divider" />
 
             <!-- GAMBAR PROMO -->
-            <div class="row justify-content-center">
+            <div class="row justify-content-center promo-grid">
 
                 <?php
                 $promos = [
@@ -121,13 +313,14 @@
                     $hasImage = ($img && $img !== '-' && file_exists($path));
                 ?>
 
-                    <div class="col-md-3 promo-wrapper mb-4">
+                    <div class="col-12 col-sm-10 col-md-4 promo-wrapper mb-4">
+                        <div class="promo-card">
 
                         <!-- TITLE + BUTTON -->
-                        <div class="d-flex justify-content-center align-items-center mb-2">
+                        <div class="promo-card-header">
 
                             <?php if ($hasImage) : ?>
-                                <h4 class="mr-3"><?= $promo['label'] ?></h4>
+                                <h4 class="promo-card-title"><?= $promo['label'] ?></h4>
                             <?php endif; ?>
 
                             <?php if ($this->session->userdata('hak_akses') == '1') : ?>
@@ -147,12 +340,13 @@
 
                         <?php else : ?>
 
-                            <div class="alert alert-secondary py-4">
+                            <div class="alert alert-secondary py-4 promo-empty">
                                 <strong>Belum ada kontrak jual</strong>
                             </div>
 
                         <?php endif; ?>
 
+                        </div>
                     </div>
 
                 <?php endforeach; ?>
@@ -560,6 +754,7 @@
 
 
         </div>
+            </div>
     </div>
 
     <!-- /.content -->

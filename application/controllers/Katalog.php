@@ -43,7 +43,7 @@ class Katalog extends CI_Controller
 
             $imagePath = "images/produk/" . $field->gbr_produk;
             if (!file_exists($imagePath)) $imagePath = "images/Karisma.png";
-            $row[] = '<img src="' . $imagePath . '" style="width:80px; height:80px; object-fit:cover;">';
+            $row[] = '<img src="' . $imagePath . '" style="width:80px; height:80px; object-fit:cover; border-radius:12px;">';
 
             // Badge 3 platform
             $shopee_badge    = $field->shopee    
@@ -58,14 +58,14 @@ class Katalog extends CI_Controller
             $row[] = $shopee_badge . '<br>' . $tokopedia_badge . '<br>' . $kiushop_badge;
 
             // Aksi
-            $aksi = '<a href="' . base_url('pricelist?id=' . $field->kode_barang) . '" 
-                        class="btn btn-primary btn-sm" target="_blank">
+            $aksi = '<div class="desktop-action-group"><a href="' . base_url('pricelist?id=' . $field->kode_barang) . '" 
+                        class="btn btn-primary btn-sm" target="_blank" title="Lihat Pricelist">
                         <i class="fa fa-eye"></i>
-                    </a> ';
+                    </a>';
 
             if ($hak_akses == '1') {
                 $aksi .= '
-                    <button class="btn btn-warning btn-sm btn-edit"
+                    <button class="btn btn-warning btn-sm btn-edit" title="Edit Barang"
                         data-id="'       . $field->id_barang   . '"
                         data-kode="'     . $field->kode_barang  . '"
                         data-nama="'     . $field->nama_barang  . '"
@@ -74,16 +74,16 @@ class Katalog extends CI_Controller
                         data-katagori="' . $field->bahan_aktif  . '">
                         <i class="fa fa-pencil-alt"></i>
                     </button>
-                    <button class="btn btn-danger btn-sm btn-hapus"
+                    <button class="btn btn-danger btn-sm btn-hapus" title="Hapus Barang"
                         data-id="'   . $field->id_barang  . '"
                         data-nama="' . $field->nama_barang . '">
                         <i class="fa fa-trash"></i>
-                    </button> ';
+                    </button>';
             }
 
             if ($hak_akses == '1' || $hak_akses == '4') {
                 $aksi .= '
-                    <button class="btn btn-info btn-sm btn-online"
+                    <button class="btn btn-info btn-sm btn-online" title="Update Online Shop"
                         data-id="'        . $field->id_barang   . '"
                         data-kode="'      . $field->kode_barang  . '"
                         data-nama="'      . $field->nama_barang  . '"
@@ -94,6 +94,7 @@ class Katalog extends CI_Controller
                     </button>';
             }
 
+            $aksi .= '</div>';
             $row[] = $aksi;
             $data[] = $row;
         }

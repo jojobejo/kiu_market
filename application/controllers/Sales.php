@@ -93,6 +93,68 @@ class Sales extends CI_Controller
         echo json_encode($output);
     }
 
+    public function getBarangAjax()
+    {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        }
+
+        $page = max(1, (int) $this->input->get('page'));
+        $per_page = (int) $this->input->get('per_page');
+        $per_page = $per_page > 0 ? min($per_page, 48) : 12;
+        $filters = array(
+            'search' => (string) $this->input->get('search', true),
+            'filter_fokus' => (string) $this->input->get('filter_fokus', true),
+            'filter_online' => (string) $this->input->get('filter_online', true),
+            'sort' => (string) $this->input->get('sort', true)
+        );
+
+        $total = $this->M_Katalog->count_catalog_ajax($filters);
+        $total_pages = max(1, (int) ceil($total / $per_page));
+        $page = min($page, $total_pages);
+        $offset = ($page - 1) * $per_page;
+
+        $items = $this->M_Katalog->get_catalog_ajax($filters, $per_page, $offset);
+        $mapped = array();
+
+        foreach ($items as $item) {
+            $gambar = ($item->gbr_produk && $item->gbr_produk !== '-' && file_exists(FCPATH . 'images/produk/' . $item->gbr_produk))
+                ? base_url('images/produk/' . $item->gbr_produk)
+                : base_url('images/Karisma.png');
+
+            $mapped[] = array(
+                'id_barang' => (int) $item->id_barang,
+                'kode_barang' => (string) $item->kode_barang,
+                'nama_barang' => (string) $item->nama_barang,
+                'nama_suplier' => (string) $item->nama_suplier,
+                'produk_fokus' => (string) $item->produk_fokus,
+                'kelompok' => (string) $item->kelompok,
+                'bahan_aktif' => (string) $item->bahan_aktif,
+                'gbr_produk' => (string) $item->gbr_produk,
+                'image_url' => $gambar,
+                'shopee' => (int) $item->shopee,
+                'tokopedia' => (int) $item->tokopedia,
+                'kiushop' => (int) $item->kiushop,
+                'pricelist_url' => base_url('pricelist?id=' . $item->kode_barang)
+            );
+        }
+
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode(array(
+                'status' => true,
+                'items' => $mapped,
+                'meta' => array(
+                    'page' => $page,
+                    'per_page' => $per_page,
+                    'total_items' => $total,
+                    'total_pages' => $total_pages,
+                    'from' => $total > 0 ? ($offset + 1) : 0,
+                    'to' => min($offset + $per_page, $total)
+                )
+            )));
+    }
+
     public function updateBahanAktif()
     {
         if (!$this->input->is_ajax_request()) {

@@ -22,106 +22,148 @@
 <script>
     var table;
     $(document).ready(function() {
+        var filterFokus = '';
+        var filterOnline = '';
 
-    var filterFokus  = '';
-    var filterOnline = '';
+        function applyOnlineFilterButtonState(button) {
+            $('.btn-filter-online').each(function() {
+                $(this).removeClass('active');
 
-    var table = $('#example1, #tableSalesOnline').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "order": [],
-        "responsive": true,
-        "ajax": {
-            "url": "<?= base_url('katalog/getBarang') ?>", // sesuaikan per halaman
-            "type": "POST",
-            "data": function(d) {
-                d.filter_fokus  = filterFokus;
-                d.filter_online = filterOnline; // ← kirim filter online
-            }
-        },
-        "columnDefs": [
-            { "visible": false,   "targets": [0] },
-            { "orderable": false, "targets": [6, 7, 8] },
-            { "className": "dt-body-center", "targets": "_all" },
-            { "responsivePriority": 1, "targets": 2 },
-            { "responsivePriority": 2, "targets": 8 },
-            { "responsivePriority": 3, "targets": 7 },
-            { "responsivePriority": 4, "targets": 3 },
-            { "responsivePriority": 5, "targets": 6 },
-            { "responsivePriority": 6, "targets": 1 },
-            { "responsivePriority": 7, "targets": 4 },
-            { "responsivePriority": 8, "targets": 5 }
-        ],
-        "drawCallback": function() {
-
-            $('.btn-edit').off('click').on('click', function() {
-                $('#edit_id_bar').val($(this).data('id'));
-                $('#edit_kode_barang').val($(this).data('kode'));
-                $('#edit_nama_barang').val($(this).data('nama'));
-                $('#edit_produk_fokus').val($(this).data('fokus'));
-                $('#edit_nama_suplier').val($(this).data('suplier'));
-                $('#edit_katagori').val($(this).data('katagori'));
-                $('#modalEdit').modal('show');
+                var online = $(this).data('online');
+                if (online == 'shopee') {
+                    $(this).css({ 'background': 'white', 'color': '#ee4d2d' });
+                } else if (online == 'tokopedia') {
+                    $(this).css({ 'background': 'white', 'color': '#42b549' });
+                } else if (online == 'kiushop') {
+                    $(this).css({ 'background': 'white', 'color': '#6096B4' });
+                }
             });
 
-            $('.btn-hapus').off('click').on('click', function() {
-                $('#hapus_nama_barang').text($(this).data('nama'));
-                $('#hapus_link').attr('href', '<?= base_url('katalog/deleteDat/') ?>' + $(this).data('id'));
-                $('#modalHapus').modal('show');
-            });
+            button.addClass('active');
 
-            $('.btn-online').off('click').on('click', function() {
-                $('#online_id_barang').val($(this).data('id'));
-                $('#online_kode_barang').val($(this).data('kode'));
-                $('#online_nama_barang').text($(this).data('nama'));
-                $('#switch_shopee').prop('checked',    $(this).data('shopee')    == 1);
-                $('#switch_tokopedia').prop('checked', $(this).data('tokopedia') == 1);
-                $('#switch_kiushop').prop('checked',   $(this).data('kiushop')   == 1);
-                $('#modalOnlineShop').modal('show');
-            });
-        }
-    });
-
-    // Filter Produk Fokus
-    $(document).on('click', '.btn-filter-fokus', function() {
-        $('.btn-filter-fokus').removeClass('active');
-        $(this).addClass('active');
-        filterFokus = $(this).data('fokus');
-        table.ajax.reload();
-    });
-
-    // Filter Online Shop ← tambahan baru
-    $(document).on('click', '.btn-filter-online', function() {
-        $('.btn-filter-online').each(function() {
-            $(this).removeClass('active');
-            // Reset style ke default
-            var online = $(this).data('online');
+            var online = button.data('online');
             if (online == 'shopee') {
-                $(this).css({'background':'white', 'color':'#ee4d2d'});
+                button.css({ 'background': '#ee4d2d', 'color': 'white' });
             } else if (online == 'tokopedia') {
-                $(this).css({'background':'white', 'color':'#42b549'});
+                button.css({ 'background': '#42b549', 'color': 'white' });
             } else if (online == 'kiushop') {
-                $(this).css({'background':'white', 'color':'#6096B4'});
+                button.css({ 'background': '#6096B4', 'color': 'white' });
+            }
+        }
+
+        function applyMobileCardFilter() {
+            var visibleCount = 0;
+
+            $('#mobileCardList .katalog-mobile-card').each(function() {
+                var card = $(this);
+                var fokus = String(card.data('fokus') || '').trim();
+                var online = String(card.data('online') || '').trim();
+
+                var fokusMatch = filterFokus === '' || fokus === filterFokus;
+                var onlineMatch = false;
+
+                if (filterOnline === '') {
+                    onlineMatch = true;
+                } else if (filterOnline === 'kosong') {
+                    onlineMatch = online === 'kosong';
+                } else {
+                    onlineMatch = online.indexOf(filterOnline) !== -1;
+                }
+
+                if (fokusMatch && onlineMatch) {
+                    visibleCount++;
+                    card.show();
+                } else {
+                    card.hide();
+                }
+            });
+
+            if ($('#mobileEmptyState').length) {
+                $('#mobileEmptyState').toggle(visibleCount === 0);
+            }
+        }
+
+        table = $('#example1, #tableSalesOnline').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "order": [],
+            "responsive": false,
+            "scrollX": true,
+            "autoWidth": false,
+            "ajax": {
+                "url": "<?= base_url('katalog/getBarang') ?>",
+                "type": "POST",
+                "data": function(d) {
+                    d.filter_fokus = filterFokus;
+                    d.filter_online = filterOnline;
+                }
+            },
+            "columnDefs": [
+                { "visible": false, "targets": [0] },
+                { "orderable": false, "targets": [6, 7, 8] },
+                { "className": "dt-body-center", "targets": "_all" }
+            ]
+        });
+
+        applyMobileCardFilter();
+
+        $(window).on('resize', function() {
+            if (table) {
+                table.columns.adjust();
             }
         });
 
-        $(this).addClass('active');
+        $(document).on('click', '.btn-edit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
 
-        // Highlight tombol aktif
-        var online = $(this).data('online');
-        if (online == 'shopee') {
-            $(this).css({'background':'#ee4d2d', 'color':'white'});
-        } else if (online == 'tokopedia') {
-            $(this).css({'background':'#42b549', 'color':'white'});
-        } else if (online == 'kiushop') {
-            $(this).css({'background':'#6096B4', 'color':'white'});
-        }
+            $('#edit_id_bar').val($(this).data('id'));
+            $('#edit_kode_barang').val($(this).data('kode'));
+            $('#edit_nama_barang').val($(this).data('nama'));
+            $('#edit_produk_fokus').val($(this).data('fokus'));
+            $('#edit_nama_suplier').val($(this).data('suplier'));
+            $('#edit_katagori').val($(this).data('katagori'));
+            $('#modalEdit').modal('show');
+        });
 
-        filterOnline = online;
-        table.ajax.reload();
+        $(document).on('click', '.btn-hapus', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            $('#hapus_nama_barang').text($(this).data('nama'));
+            $('#hapus_link').attr('href', '<?= base_url('katalog/deleteDat/') ?>' + $(this).data('id'));
+            $('#modalHapus').modal('show');
+        });
+
+        $(document).on('click', '.btn-online', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            $('#online_id_barang').val($(this).data('id'));
+            $('#online_kode_barang').val($(this).data('kode'));
+            $('#online_nama_barang').text($(this).data('nama'));
+            $('#switch_shopee').prop('checked', $(this).data('shopee') == 1);
+            $('#switch_tokopedia').prop('checked', $(this).data('tokopedia') == 1);
+            $('#switch_kiushop').prop('checked', $(this).data('kiushop') == 1);
+            $('#modalOnlineShop').modal('show');
+        });
+
+        $(document).on('click', '.btn-filter-fokus', function() {
+            $('.btn-filter-fokus').removeClass('active');
+            $(this).addClass('active');
+            filterFokus = $(this).data('fokus');
+            table.ajax.reload();
+            applyMobileCardFilter();
+        });
+
+        $(document).on('click', '.btn-filter-online', function() {
+            var button = $(this);
+            applyOnlineFilterButtonState(button);
+            filterOnline = button.data('online');
+            table.ajax.reload();
+            applyMobileCardFilter();
+        });
     });
-
-});
 </script>
 
 </body>
